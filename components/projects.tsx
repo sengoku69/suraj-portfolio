@@ -2,93 +2,187 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import {
-  ArrowRight,
-  CheckCircle2,
-  GitBranch,
-  Brain,
-  TrendingUp,
-  BarChart3,
-  ShoppingCart,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { SocialIcon } from "./ui/social-icon";
+import {
+  capabilityAreas,
+  featuredProjects,
+  otherProjects,
+  type Project,
+} from "@/lib/projects";
 
-const featuredHighlights = [
-  {
-    title: "Evidence-First Architecture",
-    description: "Deterministic fact collection before LLM reasoning",
-  },
-  {
-    title: "Multi-Agent System",
-    description: "Specialized agents for repo, dependency, and test analysis",
-  },
-  {
-    title: "Verification Layer",
-    description: "Evidence verification ensures reasoning accuracy",
-  },
-  {
-    title: "Production Ready",
-    description: "Covered by an automated test suite and benchmark runs",
-  },
-];
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-const architecture = [
-  { icon: GitBranch, title: "Repository Analysis", description: "Code structure and patterns" },
-  { icon: Brain, title: "Evidence Collection", description: "Deterministic fact gathering" },
-  { icon: TrendingUp, title: "Multi-Agent Processing", description: "Specialized analysis agents" },
-  { icon: CheckCircle2, title: "LLM Reasoning", description: "Intelligent risk assessment" },
-  { icon: BarChart3, title: "Verification and Report", description: "Evidence-backed findings" },
-];
+function ProjectLinks({ project }: { project: Project }) {
+  if (project.links.length === 0) return null;
 
-const projects = [
-  {
-    icon: TrendingUp,
-    accent: "from-blue-500/20 to-cyan-500/20",
-    iconColor: "text-blue-500",
-    title: "SupplyPrescript",
-    description:
-      "AI-powered supply-chain optimization using XGBoost delay prediction and PuLP prescriptive actions.",
-    technologies: ["Python", "FastAPI", "XGBoost", "PuLP", "React", "Vite"],
-    highlights: [
-      "Delay prediction with XGBoost ML model",
-      "Optimization-based prescriptive recommendations",
-      "REST API with FastAPI backend",
-      "Interactive React dashboard with Tailwind UI",
-    ],
-  },
-  {
-    icon: BarChart3,
-    accent: "from-purple-500/20 to-pink-500/20",
-    iconColor: "text-purple-500",
-    title: "Data Analytics & ML Projects",
-    description:
-      "Data science projects from the Oasis Infobyte internship covering EDA, machine learning, and NLP applications.",
-    technologies: ["Python", "Pandas", "Scikit-learn", "NLTK", "Matplotlib", "Seaborn"],
-    highlights: [
-      "Retail sales EDA with comprehensive analysis",
-      "Customer segmentation using RFM & K-Means",
-      "Sentiment analysis using NLP and ML",
-      "House price prediction with regression",
-    ],
-  },
-  {
-    icon: ShoppingCart,
-    accent: "from-green-500/20 to-emerald-500/20",
-    iconColor: "text-green-500",
-    title: "MERN E-Commerce Platform",
-    description:
-      "Full-stack e-commerce app with product management, shopping cart, and RESTful API architecture.",
-    technologies: ["React", "Node.js", "Express", "MongoDB", "REST APIs"],
-    highlights: [
-      "Complete CRUD operations for products",
-      "User authentication and authorization",
-      "Shopping cart and order management",
-      "MongoDB database integration",
-    ],
-  },
-];
+  return (
+    <div className="mt-auto flex flex-wrap items-center gap-3 pt-6">
+      {project.links.map((link) => (
+        <Button
+          key={link.href}
+          size="sm"
+          variant={link.label === "Live Demo" ? "outline" : "default"}
+          asChild
+        >
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={
+              project.links.length > 1
+                ? `${link.label} — ${project.name}`
+                : `${project.name} on GitHub`
+            }
+          >
+            {link.label === "Live Demo" ? null : (
+              <SocialIcon icon="github" className="h-4 w-4 shrink-0" />
+            )}
+            <span>{link.label}</span>
+            <ArrowUpRight
+              size={14}
+              aria-hidden
+              className="transition-transform duration-200 group-hover/button:translate-x-0.5 group-hover/button:-translate-y-0.5"
+            />
+          </a>
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+function StatRow({ project, className = "" }: { project: Project; className?: string }) {
+  if (!project.stats) return null;
+
+  return (
+    <dl className={`grid grid-cols-3 gap-4 ${className}`}>
+      {/* dd/dt are visually reordered (value above label) via order utilities. */}
+      {project.stats.map((stat) => (
+        <div key={stat.label} className="min-w-0">
+          <dd className="order-1 font-mono text-lg font-semibold leading-tight tabular-nums text-accent sm:text-xl">
+            {stat.value}
+          </dd>
+          <dt className="order-2 mt-1 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+            {stat.label}
+          </dt>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function CapabilityList({ project, className = "" }: { project: Project; className?: string }) {
+  return (
+    <ul className={`space-y-2 text-xs text-muted-foreground sm:text-sm ${className}`}>
+      {project.capabilities.map((capability) => (
+        <li key={capability} className="flex items-start gap-2.5">
+          <span
+            aria-hidden
+            className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-accent"
+          />
+          <span className="text-pretty leading-relaxed">{capability}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function TechBadges({ project, className = "" }: { project: Project; className?: string }) {
+  return (
+    <div className={`flex flex-wrap gap-2 ${className}`}>
+      {project.technologies.map((tech) => (
+        <Badge key={tech}>{tech}</Badge>
+      ))}
+    </div>
+  );
+}
+
+function ProjectHeader({ project }: { project: Project }) {
+  const Icon = project.icon;
+
+  return (
+    <>
+      <div className="mb-5 flex items-center gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10">
+          <Icon className="h-6 w-6 text-accent" aria-hidden />
+        </div>
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-accent sm:text-xs">
+            {project.category}
+          </p>
+          <h3 className="text-balance text-xl font-bold leading-tight tracking-tight sm:text-2xl">
+            {project.name}
+          </h3>
+        </div>
+      </div>
+      <p className="mb-6 text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
+        {project.description}
+      </p>
+    </>
+  );
+}
+
+function FeaturedProject({ project, index }: { project: Project; index: number }) {
+  const asymmetric = index % 2 === 1;
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
+      className="group relative overflow-hidden rounded-3xl border border-border bg-background transition-colors duration-300 hover:border-accent/30"
+    >
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute -top-24 h-56 w-56 rounded-full bg-accent/10 blur-3xl transition-opacity duration-700 group-hover:opacity-100 ${
+          asymmetric ? "-right-24" : "-left-24"
+        } opacity-0`}
+      />
+
+      <div className="relative p-6 sm:p-8 lg:p-10">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
+          <div>
+            <ProjectHeader project={project} />
+            <TechBadges project={project} className="mb-8" />
+            <ProjectLinks project={project} />
+          </div>
+
+          <div className="flex flex-col gap-8">
+            <CapabilityList project={project} />
+            {project.stats && (
+              <div className="rounded-2xl border border-border/70 bg-muted/40 p-5 sm:p-6">
+                <StatRow project={project} />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function OtherProject({ project, index }: { project: Project; index: number }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: (index % 3) * 0.08, ease: EASE }}
+      className="group flex flex-col rounded-2xl border border-border bg-background p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5"
+    >
+      <ProjectHeader project={project} />
+      <TechBadges project={project} className="mb-6" />
+      <CapabilityList project={project} className="mb-6" />
+      {project.stats && (
+        <StatRow project={project} className="mb-6 rounded-2xl border border-border/70 bg-muted/40 p-4" />
+      )}
+      <ProjectLinks project={project} />
+    </motion.article>
+  );
+}
 
 export function Projects() {
   const ref = useRef(null);
@@ -100,6 +194,7 @@ export function Projects() {
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background"
       />
+
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -113,155 +208,59 @@ export function Projects() {
           <h2 className="mb-6 text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             Selected Projects
           </h2>
-          <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          <p className="mx-auto mb-10 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Building analytical and intelligent systems that combine data, AI, and practical
             software engineering
           </p>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-          className="mx-auto mb-12 max-w-7xl sm:mb-16"
-        >
-          <div className="group relative overflow-hidden rounded-3xl border-2 border-accent/20 bg-gradient-to-br from-accent/[0.07] via-background to-background p-6 transition-all duration-500 hover:border-accent/30 hover:shadow-2xl hover:shadow-accent/10 sm:p-10 lg:p-12">
-            <div
-              aria-hidden
-              className="absolute -right-40 -top-40 h-80 w-80 rounded-full bg-accent/20 opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
-            />
-            <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
-              <span className="inline-flex items-center rounded-full border border-accent/20 bg-accent/20 px-3 py-1.5 text-[11px] font-semibold text-accent backdrop-blur-sm sm:text-xs">
-                FEATURED PROJECT
-              </span>
-            </div>
-
-            <div className="relative z-10 grid items-start gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-12">
-              <div className="pt-10 sm:pt-8 lg:pt-0">
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent/10">
-                    <Brain className="h-7 w-7 text-accent" aria-hidden />
-                  </div>
-                  <h3 className="text-balance text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
-                    RepoLens AI
-                  </h3>
-                </div>
-
-                <p className="mb-8 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
-                  An evidence-first multi-agent AI system for repository quality and risk analysis.
-                </p>
-
-                <div className="mb-8 space-y-4">
-                  {featuredHighlights.map((highlight) => (
-                    <div key={highlight.title} className="flex items-start gap-3">
-                      <CheckCircle2
-                        className="mt-0.5 h-5 w-5 shrink-0 text-accent"
-                        aria-hidden
-                      />
-                      <div>
-                        <p className="mb-1 font-semibold text-foreground">{highlight.title}</p>
-                        <p className="text-pretty text-sm text-muted-foreground">
-                          {highlight.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mb-8 flex flex-wrap gap-2">
-                  <Badge>Python</Badge>
-                  <Badge>LangGraph</Badge>
-                  <Badge>LangChain</Badge>
-                  <Badge>LLM APIs</Badge>
-                  <Badge>Pydantic</Badge>
-                  <Badge>pytest</Badge>
-                </div>
-
-                <Button size="lg" className="w-full sm:w-auto" asChild>
-                  <a
-                    href="https://github.com/sengoku69/RepoLens-AI"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <SocialIcon icon="github" className="h-4 w-4 shrink-0" />
-                    <span>View on GitHub</span>
-                    <ArrowRight
-                      size={16}
-                      aria-hidden
-                      className="transition-transform duration-200 group-hover/button:translate-x-0.5"
-                    />
-                  </a>
-                </Button>
-              </div>
-
-              <div className="rounded-2xl border border-border/50 bg-muted/50 p-6 backdrop-blur-sm sm:p-8">
-                <h4 className="mb-6 text-sm font-semibold uppercase tracking-wide text-accent">
-                  System Architecture
-                </h4>
-                <div className="space-y-4">
-                  {architecture.map((step) => {
-                    const StepIcon = step.icon;
-                    return (
-                      <div key={step.title} className="flex items-start gap-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10">
-                          <StepIcon className="h-5 w-5 text-accent" aria-hidden />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="mb-0.5 font-medium text-sm">{step.title}</p>
-                          <p className="text-pretty text-xs text-muted-foreground">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => {
-            const ProjectIcon = project.icon;
-            return (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                className="group flex flex-col rounded-2xl border border-border bg-background p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/20 hover:bg-muted/30 hover:shadow-xl hover:shadow-accent/5 sm:p-8"
-              >
-                <div
-                  className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${project.accent}`}
+          <ul className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-2 sm:gap-3">
+            {capabilityAreas.map((area) => {
+              const AreaIcon = area.icon;
+              return (
+                <li
+                  key={area.label}
+                  className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/5 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-accent/30 hover:text-foreground sm:text-sm"
                 >
-                  <ProjectIcon className={`h-7 w-7 ${project.iconColor}`} aria-hidden />
-                </div>
-                <h3 className="mb-3 text-balance text-xl font-bold transition-colors group-hover:text-accent">
-                  {project.title}
-                </h3>
-                <p className="mb-6 text-pretty text-sm leading-relaxed text-muted-foreground">
-                  {project.description}
-                </p>
-                <div className="mb-6 flex flex-wrap gap-2">
-                  {project.technologies.map((tech) => (
-                    <Badge key={tech}>{tech}</Badge>
-                  ))}
-                </div>
-                <ul className="mt-auto space-y-2 text-xs text-muted-foreground">
-                  {project.highlights.map((highlight) => (
-                    <li key={highlight} className="flex items-start gap-2">
-                      <span
-                        aria-hidden
-                        className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent"
-                      />
-                      <span className="text-pretty leading-relaxed">{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            );
-          })}
+                  <AreaIcon className="h-3.5 w-3.5 text-accent" aria-hidden />
+                  {area.label}
+                </li>
+              );
+            })}
+          </ul>
+        </motion.div>
+
+        <div className="mx-auto max-w-7xl">
+          <motion.h3
+            initial={{ opacity: 0, y: 16 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mb-6 flex items-center gap-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+          >
+            Featured Projects
+            <span aria-hidden className="h-px flex-1 bg-border" />
+          </motion.h3>
+
+          <div className="space-y-6 sm:space-y-8">
+            {featuredProjects.map((project, index) => (
+              <FeaturedProject key={project.name} project={project} index={index} />
+            ))}
+          </div>
+
+          <motion.h3
+            initial={{ opacity: 0, y: 16 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-6 mt-16 flex items-center gap-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground sm:mt-20"
+          >
+            Other Projects
+            <span aria-hidden className="h-px flex-1 bg-border" />
+          </motion.h3>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {otherProjects.map((project, index) => (
+              <OtherProject key={project.name} project={project} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
