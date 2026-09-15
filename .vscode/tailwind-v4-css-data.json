@@ -1,0 +1,68 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@theme",
+      "description": "Tailwind CSS v4: defines design tokens (colors, fonts, spacing, breakpoints…) that generate utilities and CSS variables. Use `@theme inline` when the values reference variables that change per theme (e.g. light/dark).",
+      "references": [
+        { "name": "Tailwind CSS — Theme variables", "url": "https://tailwindcss.com/docs/theme" }
+      ]
+    },
+    {
+      "name": "@apply",
+      "description": "Tailwind CSS: inlines existing utility classes into a custom CSS rule.",
+      "references": [
+        { "name": "Tailwind CSS — Functions and directives", "url": "https://tailwindcss.com/docs/functions-and-directives#apply" }
+      ]
+    },
+    {
+      "name": "@utility",
+      "description": "Tailwind CSS v4: defines a custom utility class.",
+      "references": [
+        { "name": "Tailwind CSS — Adding custom utilities", "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-utilities" }
+      ]
+    },
+    {
+      "name": "@variant",
+      "description": "Tailwind CSS v4: applies a variant (hover, focus, responsive…) to a custom rule.",
+      "references": [
+        { "name": "Tailwind CSS — Adding custom variants", "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants" }
+      ]
+    },
+    {
+      "name": "@custom-variant",
+      "description": "Tailwind CSS v4: registers a new custom variant.",
+      "references": [
+        { "name": "Tailwind CSS — Adding custom variants", "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants" }
+      ]
+    },
+    {
+      "name": "@source",
+      "description": "Tailwind CSS v4: explicitly registers additional source files or directories to scan for class names.",
+      "references": [
+        { "name": "Tailwind CSS — Detecting classes in source files", "url": "https://tailwindcss.com/docs/detecting-classes-in-source-files" }
+      ]
+    },
+    {
+      "name": "@plugin",
+      "description": "Tailwind CSS v4: loads a legacy JavaScript plugin.",
+      "references": [
+        { "name": "Tailwind CSS — Functions and directives", "url": "https://tailwindcss.com/docs/functions-and-directives#plugin-directive" }
+      ]
+    },
+    {
+      "name": "@config",
+      "description": "Tailwind CSS v4: loads a legacy JavaScript config file.",
+      "references": [
+        { "name": "Tailwind CSS — Functions and directives", "url": "https://tailwindcss.com/docs/functions-and-directives#config-directive" }
+      ]
+    },
+    {
+      "name": "@reference",
+      "description": "Tailwind CSS v4: imports theme variables, custom utilities and custom variants from another stylesheet without duplicating its CSS (useful in CSS Modules and Vue/Svelte style blocks).",
+      "references": [
+        { "name": "Tailwind CSS — Functions and directives", "url": "https://tailwindcss.com/docs/functions-and-directives#reference-directive" }
+      ]
+    }
+  ]
+}

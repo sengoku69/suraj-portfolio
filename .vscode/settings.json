@@ -1,0 +1,7 @@
+{
+  // Teach VS Code's built-in CSS language service about Tailwind CSS v4 at-rules
+  // (@theme, @apply, @utility, …). Without this, VS Code reports
+  // "Unknown at rule @theme/@apply" (css/unknownAtRules) even though the
+  // Tailwind v4 PostCSS build handles them correctly.
+  "css.customData": [".vscode/tailwind-v4-css-data.json"]
+}
