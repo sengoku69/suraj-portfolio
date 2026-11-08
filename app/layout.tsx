@@ -15,23 +15,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Suraj Narayan — Data Analyst · AI/ML",
+  title: "Suraj Narayan | Digital Imaging & Graphic Design",
   description:
-    "Portfolio of Suraj Narayan, a Data Analyst working across ETL pipelines, analytics, and machine learning — with projects in AI, data science, and full-stack engineering.",
+    "A focused visual portfolio showcasing conceptual studies in digital imaging, photo editing, product presentation, graphic design, 2D illustration, image annotation and 3D visual concepts.",
   openGraph: {
-    title: "Suraj Narayan — Data Analyst · AI/ML",
+    title: "Suraj Narayan | Digital Imaging & Graphic Design",
     description:
-      "Portfolio of Suraj Narayan, a Data Analyst working across ETL pipelines, analytics, and machine learning — with projects in AI, data science, and full-stack engineering.",
+      "Conceptual visual studies across photo editing, graphic design, 2D illustration, image annotation and product imagery.",
     type: "website",
   },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="overflow-x-hidden">{children}</body>
     </html>
   );
