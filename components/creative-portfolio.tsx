@@ -442,7 +442,10 @@ export function CreativePortfolio() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-[10px] uppercase tracking-[0.16em] text-white/35 sm:flex-row sm:text-left">
           <span>Suraj Narayan · Visual Works</span>
           <span>Digital imaging · Graphic design · Visual annotation</span>
-          <a href="#top" className="transition hover:text-white/70">Back to top ↑</a>
+          <div className="flex flex-wrap items-center justify-center gap-5">
+            <a href="/technical" className="transition hover:text-white/70">Technical portfolio</a>
+            <a href="#top" className="transition hover:text-white/70">Back to top ↑</a>
+          </div>
         </div>
       </footer>
     </main>
