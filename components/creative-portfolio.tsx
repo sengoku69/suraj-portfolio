@@ -229,9 +229,9 @@ export function CreativePortfolio() {
           >
             <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-[#d7a36a]/15 via-transparent to-[#8b5cf6]/15 blur-2xl" />
             <div className="relative overflow-hidden rounded-[1.7rem] border border-white/15 bg-[#171a22] p-2 shadow-2xl shadow-black/40">
-              <div className="relative aspect-[1.35/1] overflow-hidden rounded-[1.25rem]">
+              <div className="relative aspect-[8/3] overflow-hidden rounded-[1.25rem]">
                 <Image
-                  src="/creative/portfolio-cover.webp"
+                  src="/creative/portfolio-sheet.webp"
                   alt="Collage of conceptual digital imaging, graphic design, photo editing and image annotation examples"
                   fill
                   priority
@@ -307,7 +307,7 @@ export function CreativePortfolio() {
                     aria-label={project.alt}
                     className="relative aspect-[16/9] overflow-hidden bg-[#242a35] bg-no-repeat transition duration-500 group-hover:scale-[1.01]"
                     style={{
-                      backgroundImage: "url('/creative/portfolio-samples.webp')",
+                      backgroundImage: "url('/creative/portfolio-sheet.webp')",
                       backgroundSize: "300% 200%",
                       backgroundPosition: project.position,
                     }}
